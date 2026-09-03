@@ -1,0 +1,228 @@
+// Prisma schema for The Fantasy Playbook.
+// Data layer notes:
+// - JSON columns (statsJson) hold flexible per-stat mean/stddev payloads so new
+//   stat categories or scoring formats can be added without a schema migration.
+// - `scoringFormat` and `leagueFormat` are present from day one (see Enums below)
+//   even though only PPR / redraft data exists yet, so dynasty + alt scoring
+//   formats can be layered on later without a breaking migration.
+// - Auth models follow the standard NextAuth.js Prisma adapter shape.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum ScoringFormat {
+  ppr
+  half_ppr
+  standard
+}
+
+enum LeagueFormat {
+  redraft
+  dynasty
+}
+
+enum Position {
+  QB
+  RB
+  WR
+  TE
+  K
+  DST
+}
+
+// ---------------------------------------------------------------------------
+// Core fantasy data
+// ---------------------------------------------------------------------------
+
+model Player {
+  id       String   @id @default(cuid())
+  name     String
+  team     String
+  position Position
+
+  // External identifiers for cross-referencing with source CSVs / other APIs.
+  externalId String? @unique // e.g. the ID used in the projection CSVs
+  sleeperId  String? @unique
+  espnId     String? @unique
+  yahooId    String? @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  projections PlayerProjection[]
+
+  @@index([position])
+  @@index([team])
+  @@index([name])
+}
+
+model PlayerProjection {
+  id       String @id @default(cuid())
+  playerId String
+  player   Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  scoringFormat ScoringFormat @default(ppr)
+  // Present now so dynasty support can be added later without a breaking migration.
+  leagueFormat  LeagueFormat  @default(redraft)
+
+  season Int // e.g. 2026
+
+  seasonPoints    Float // full-season projected fantasy points
+  riskScore       Float? // higher = more variance/uncertainty
+  boomRate        Float? // probability of a "boom" week, 0-1
+  bustRate        Float? // probability of a "bust" week, 0-1
+  expectationRate Float? // probability of hitting the expected/median outcome, 0-1
+
+  // Week-level projections: mean + std dev per stat, per week. Kept as JSON
+  // (rather than fixed columns) because the stat set varies by position and
+  // may grow over time, e.g.:
+  // { "1": { "passYds": { "mean": 250, "stdDev": 40 }, "passTds": { "mean": 1.8, "stdDev": 0.9 } }, ... }
+  weeklyStatsJson Json?
+
+  source     String? // e.g. filename/tag of the CSV this row was imported from
+  importedAt DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([playerId, scoringFormat, leagueFormat, season])
+  @@index([scoringFormat, leagueFormat, season])
+}
+
+model TeamProjection {
+  id   String @id @default(cuid())
+  team String // team abbreviation, e.g. "KC"
+
+  scoringFormat ScoringFormat @default(ppr)
+  season        Int
+  week          Int // 0 can represent season-long / non-weekly rows if needed
+
+  // Wide, evolving stat set (~20 stats: passing/rushing volume + efficiency,
+  // scoring, etc.), each as { mean, stdDev }. Kept as JSON for flexibility, e.g.:
+  // { "passYds": { "mean": 245, "stdDev": 35 }, "rushYds": { "mean": 110, "stdDev": 22 }, ... }
+  statsJson Json
+
+  // Standings simulation outputs, e.g. { "wins": 9.4, "losses": 6.6, "playoffOdds": 0.62, "divisionOdds": 0.31 }
+  standingsJson Json?
+
+  // This week's opponent + projected matchup total, used to render the
+  // current-week matchup section (mean ± stdDev per side).
+  opponent              String?
+  projectedPoints       Float?
+  projectedPointsStdDev Float?
+
+  source     String?
+  importedAt DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([team, scoringFormat, season, week])
+  @@index([scoringFormat, season, week])
+}
+
+// ---------------------------------------------------------------------------
+// Content
+// ---------------------------------------------------------------------------
+
+model Article {
+  id            String  @id @default(cuid())
+  title         String
+  slug          String  @unique
+  bodyMarkdown  String
+  coverImageUrl String?
+  excerpt       String?
+
+  authorId   String?
+  authorName String?
+
+  publishedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  comments Comment[]
+
+  @@index([publishedAt])
+}
+
+model Comment {
+  id        String  @id @default(cuid())
+  articleId String
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([articleId])
+}
+
+// ---------------------------------------------------------------------------
+// Auth (NextAuth.js Prisma adapter models)
+// ---------------------------------------------------------------------------
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+
+  accounts Account[]
+  sessions Session[]
+  comments Comment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
