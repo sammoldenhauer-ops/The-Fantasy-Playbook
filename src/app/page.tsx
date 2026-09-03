@@ -39,18 +39,15 @@ export default async function Home() {
         <div className="pointer-events-none absolute -bottom-56 right-0 h-[32rem] w-[32rem] rounded-full bg-violet-500/15 blur-3xl" />
         <div className="relative mx-auto grid min-h-[650px] w-full max-w-7xl items-center gap-12 px-6 py-20 sm:px-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20 lg:px-20 lg:py-24">
           <div className="order-2 flex flex-col items-center text-center lg:order-1 lg:items-start lg:text-left">
-            <Badge className="mb-7 border-white/20 bg-white/10 text-white hover:bg-white/10">
-              Fantasy football, but make it fun.
-            </Badge>
-            <h1 className="max-w-3xl font-serif text-5xl font-semibold leading-[0.95] tracking-tight sm:text-7xl lg:text-8xl">
-              Trust your gut.
-              <br />
-              <span className="text-emerald-300">Check the vibes.</span>
-            </h1>
-            <p className="mt-8 max-w-2xl text-lg leading-8 text-slate-300 sm:text-xl">
+            <p className="max-w-2xl font-serif text-3xl font-medium leading-[1.2] text-slate-100 sm:text-4xl lg:text-5xl lg:leading-[1.18]">
               The prep work of a stats nerd, the simplicity of a friend who just tells you who to
-              start. The Fantasy Playbook does the deep digging every week so you don&apos;t have to.
-              Just sit back, relax, and trust the playbook.
+              start.
+              <br />
+              <br />
+              The Fantasy Playbook does the deep digging every week so you don&apos;t have to.
+              <br />
+              <br />
+              <span className="text-emerald-300">Just sit back, relax, and trust the playbook.</span>
             </p>
           </div>
           <div className="order-1 relative mx-auto w-full max-w-[500px] rounded-[2rem] border border-white/15 bg-gradient-to-br from-emerald-200/20 via-emerald-950/70 to-slate-950 p-5 shadow-2xl shadow-emerald-950/50 lg:order-2 lg:p-8">
