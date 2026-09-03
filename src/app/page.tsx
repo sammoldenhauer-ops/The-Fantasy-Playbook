@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,28 +34,29 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen overflow-hidden">
-      <section className="relative border-b bg-[radial-gradient(circle_at_top_right,oklch(0.78_0.16_160/.2),transparent_45%),linear-gradient(135deg,oklch(0.18_0.05_280),oklch(0.12_0.03_250))] text-white">
-        <div className="mx-auto max-w-6xl px-6 py-20 sm:py-28">
-          <Badge className="mb-6 border-white/20 bg-white/10 text-white hover:bg-white/10">Fantasy football, but make it fun.</Badge>
-          <div className="max-w-3xl">
-            <h1 className="text-5xl font-bold tracking-tight sm:text-7xl">
-              Trust your gut.
-              <br />
-              Check the vibes.
-            </h1>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-white/70 sm:text-xl">
-              Player rankings, team projections, and the numbers behind your next fantasy football
-              decision — without the spreadsheet headache.
-            </p>
-          </div>
-          <nav aria-label="Primary" className="mt-10 flex flex-wrap gap-3">
-            {navLinks.map((link) => (
+      <section className="relative border-b border-black bg-black text-white">
+        <div className="relative mx-auto aspect-[1365/768] w-full max-w-[1365px]">
+          <Image
+            src="/the-fantasy-playbook-hero.png"
+            alt="The Fantasy Playbook: fantasy football analysis made simple, with links to rankings, projections, articles, lineup analysis, trade analysis, and start or sit advice."
+            fill
+            priority
+            sizes="(max-width: 1365px) 100vw, 1365px"
+            className="object-contain"
+          />
+          <nav aria-label="Primary" className="absolute inset-0">
+            {navLinks.map((link, index) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="inline-flex h-9 items-center justify-center rounded-full border border-white/25 bg-white/10 px-2.5 text-sm font-medium text-white transition-colors hover:bg-white hover:text-slate-950"
+                aria-label={link.label}
+                className="absolute top-[67.4%] h-[4.4%] rounded-full outline-none transition-[box-shadow] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                style={{
+                  left: `${[18.5, 29.2, 39.9, 50.7, 61.5, 72.2][index]}%`,
+                  width: "9.3%",
+                }}
               >
-                {link.label}
+                <span className="sr-only">{link.label}</span>
               </Link>
             ))}
           </nav>
