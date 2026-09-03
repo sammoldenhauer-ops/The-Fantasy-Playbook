@@ -34,33 +34,45 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen overflow-hidden">
-      <section className="relative border-b border-black bg-black text-white">
-        <div className="relative mx-auto aspect-[1365/768] w-full max-w-[1365px]">
-          <Image
-            src="/the-fantasy-playbook-hero.png"
-            alt="The Fantasy Playbook: fantasy football analysis made simple, with links to rankings, projections, articles, lineup analysis, trade analysis, and start or sit advice."
-            fill
-            priority
-            sizes="(max-width: 1365px) 100vw, 1365px"
-            className="object-contain"
-          />
-          <nav aria-label="Primary" className="absolute inset-0">
-            {navLinks.map((link, index) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                aria-label={link.label}
-                className="absolute top-[67.4%] h-[4.4%] rounded-full outline-none transition-[box-shadow] focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
-                style={{
-                  left: `${[18.5, 29.2, 39.9, 50.7, 61.5, 72.2][index]}%`,
-                  width: "9.3%",
-                }}
-              >
-                <span className="sr-only">{link.label}</span>
-              </Link>
-            ))}
-          </nav>
+      <section className="relative min-h-[680px] overflow-hidden border-b border-emerald-950 bg-[linear-gradient(180deg,#67916b_0%,#286b58_43%,#063b2b_100%)] text-white sm:min-h-[min(760px,100svh)]">
+        <div className="mx-auto grid min-h-[680px] w-full max-w-7xl items-center gap-6 px-6 py-14 sm:min-h-[min(760px,100svh)] sm:grid-cols-[1fr_1.05fr] sm:gap-10 sm:px-12 lg:px-20">
+          <div className="relative mx-auto w-full max-w-[460px] sm:mx-0">
+            <Image
+              src="/playbook-mark.png"
+              alt="The Fantasy Playbook"
+              width={910}
+              height={610}
+              priority
+              className="h-auto w-full object-contain"
+            />
+          </div>
+          <div className="flex flex-col items-center text-center sm:items-start sm:text-left">
+            <p className="max-w-xl font-serif text-xl font-medium leading-relaxed text-white sm:text-2xl lg:text-[2rem] lg:leading-[1.35]">
+              The prep work of a stats nerd, the simplicity
+              <br className="hidden lg:block" /> of a friend who just tells you who to start.
+              <br className="hidden lg:block" /> The Fantasy Playbook does the deep digging every
+              <br className="hidden lg:block" /> week so you don&apos;t have to.
+              <br className="hidden lg:block" /> Just sit back, relax, and trust the playbook.
+            </p>
+          </div>
         </div>
+        <nav aria-label="Primary" className="absolute inset-x-0 bottom-8 mx-auto flex max-w-6xl flex-wrap justify-center gap-3 px-6 sm:bottom-10 sm:gap-5">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="inline-flex min-w-28 items-center justify-center rounded-full bg-black px-5 py-2 text-sm font-medium text-white transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-emerald-950"
+            >
+              {link.label === "Player rankings"
+                ? "Rankings"
+                : link.label === "Team projections"
+                  ? "Projections"
+                  : link.label === "Lineup analysis"
+                    ? "My Lineup"
+                    : link.label}
+            </Link>
+          ))}
+        </nav>
       </section>
 
       <div className="mx-auto max-w-6xl space-y-16 px-6 py-16">
