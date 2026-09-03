@@ -34,29 +34,38 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen overflow-hidden">
-      <section className="relative min-h-[680px] overflow-hidden border-b border-emerald-950 bg-[linear-gradient(180deg,#67916b_0%,#286b58_43%,#063b2b_100%)] text-white sm:min-h-[min(760px,100svh)]">
-        <div className="mx-auto grid min-h-[680px] w-full max-w-7xl items-center gap-6 px-6 py-14 sm:min-h-[min(760px,100svh)] sm:grid-cols-[1fr_1.05fr] sm:gap-10 sm:px-12 lg:px-20">
-          <div className="relative mx-auto w-full max-w-[460px] sm:mx-0">
+      <section className="relative overflow-hidden border-b border-slate-800 bg-[#080b18] text-white">
+        <div className="pointer-events-none absolute -left-40 -top-40 h-[32rem] w-[32rem] rounded-full bg-emerald-400/15 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-56 right-0 h-[32rem] w-[32rem] rounded-full bg-violet-500/15 blur-3xl" />
+        <div className="relative mx-auto grid min-h-[650px] w-full max-w-7xl items-center gap-12 px-6 py-20 sm:px-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20 lg:px-20 lg:py-24">
+          <div className="order-2 flex flex-col items-center text-center lg:order-1 lg:items-start lg:text-left">
+            <Badge className="mb-7 border-white/20 bg-white/10 text-white hover:bg-white/10">
+              Fantasy football, but make it fun.
+            </Badge>
+            <h1 className="max-w-3xl font-serif text-5xl font-semibold leading-[0.95] tracking-tight sm:text-7xl lg:text-8xl">
+              Trust your gut.
+              <br />
+              <span className="text-emerald-300">Check the vibes.</span>
+            </h1>
+            <p className="mt-8 max-w-2xl text-lg leading-8 text-slate-300 sm:text-xl">
+              The prep work of a stats nerd, the simplicity of a friend who just tells you who to
+              start. The Fantasy Playbook does the deep digging every week so you don&apos;t have to.
+              Just sit back, relax, and trust the playbook.
+            </p>
+          </div>
+          <div className="order-1 relative mx-auto w-full max-w-[500px] rounded-[2rem] border border-white/15 bg-gradient-to-br from-emerald-200/20 via-emerald-950/70 to-slate-950 p-5 shadow-2xl shadow-emerald-950/50 lg:order-2 lg:p-8">
+            <div className="absolute inset-3 rounded-[1.5rem] border border-white/10" />
             <Image
               src="/playbook-mark.png"
               alt="The Fantasy Playbook"
               width={910}
               height={610}
               priority
-              className="h-auto w-full object-contain"
+              className="relative h-auto w-full object-contain mix-blend-screen"
             />
           </div>
-          <div className="flex flex-col items-center text-center sm:items-start sm:text-left">
-            <p className="max-w-xl font-serif text-xl font-medium leading-relaxed text-white sm:text-2xl lg:text-[2rem] lg:leading-[1.35]">
-              The prep work of a stats nerd, the simplicity
-              <br className="hidden lg:block" /> of a friend who just tells you who to start.
-              <br className="hidden lg:block" /> The Fantasy Playbook does the deep digging every
-              <br className="hidden lg:block" /> week so you don&apos;t have to.
-              <br className="hidden lg:block" /> Just sit back, relax, and trust the playbook.
-            </p>
-          </div>
         </div>
-        <nav aria-label="Primary" className="absolute inset-x-0 bottom-8 mx-auto flex max-w-6xl flex-wrap justify-center gap-3 px-6 sm:bottom-10 sm:gap-5">
+        <nav aria-label="Primary" className="relative mx-auto flex max-w-6xl flex-wrap justify-center gap-3 px-6 pb-10 sm:gap-4 sm:pb-12">
           {navLinks.map((link) => (
             <Link
               key={link.href}
